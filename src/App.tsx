@@ -212,7 +212,7 @@ async function getWalkingRoute(
 
 
 
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 async function fetchAreaData(route: SingleRouteData): Promise<AreaData> {
   const coordinates = route.coordinates;
@@ -238,7 +238,7 @@ async function fetchAreaData(route: SingleRouteData): Promise<AreaData> {
 
   const points = sampledCoordinates.map(([lat, lon]) => ({ lat, lon }));
 
-  const response = await fetch("/api/area-data", {
+  const response = await fetch(`${API_BASE_URL}/api/area-data`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

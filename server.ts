@@ -1,12 +1,40 @@
+
 import "dotenv/config";
 import express from "express";
 
 const app = express();
-const PORT = 3001;
+const PORT = Number(process.env.PORT) || 3001;
 const API_KEY = process.env.OVERPASS_API_KEY;
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
+
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    res.sendStatus(204);
+    return;
+  }
+
+  next();
+});
 
 app.use(express.json());
 
+app.get("/", (_req, res) => {
+  res.send("NIGHTWATCH API is running.");
+});
 
 app.post("/api/area-data", async (req, res) => {
   if (!API_KEY) {
@@ -40,12 +68,12 @@ app.post("/api/area-data", async (req, res) => {
   }
 
   const queries = points.map(
-  (point: { lat: number; lon: number }) => `
-    nwr(around:60,${point.lat},${point.lon})[highway=street_lamp];
-    nwr(around:60,${point.lat},${point.lon})[man_made=street_lamp];
-    nwr(around:60,${point.lat},${point.lon})[amenity~"^(bench|drinking_water|toilets)$"];
-  `,
-);
+    (point: { lat: number; lon: number }) => `
+      nwr(around:60,${point.lat},${point.lon})[highway=street_lamp];
+      nwr(around:60,${point.lat},${point.lon})[man_made=street_lamp];
+      nwr(around:60,${point.lat},${point.lon})[amenity~"^(bench|drinking_water|toilets)$"];
+    `,
+  );
 
   const query = `
     [out:json][timeout:25];
@@ -90,7 +118,6 @@ app.post("/api/area-data", async (req, res) => {
   }
 });
 
-
 app.listen(PORT, () => {
-  console.log(`NIGHTWATCH data server running at http://localhost:${PORT}`);
+  console.log(`NIGHTWATCH API running on port ${PORT}`);
 });
