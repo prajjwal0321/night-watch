@@ -403,18 +403,19 @@ input:focus-visible {
 
 .map-canvas {
   position: relative;
-  flex: 1;
-  min-height: 440px;
+  flex: 0 0 560px;
+  height: 560px;
+  min-height: 560px;
+  width: 100%;
   overflow: hidden;
   background: #182426;
+  isolation: isolate;
 }
-
 .leaflet-map {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  background: #182426;
   z-index: 1;
 }
 
@@ -609,10 +610,11 @@ input:focus-visible {
 
 @media (min-width: 1500px) {
   .map-canvas {
-    min-height: 540px;
+    flex-basis: 600px;
+    height: 600px;
+    min-height: 600px;
   }
 }
-
 @media (max-width: 1000px) {
   .app-shell {
     grid-template-columns: 300px minmax(0, 1fr);
@@ -661,10 +663,11 @@ input:focus-visible {
     padding-top: 18px;
   }
 
-  .map-panel {
-    min-height: 780px;
-  }
-
+  .map-canvas {
+  flex: 0 0 470px;
+  height: 470px;
+  min-height: 470px;
+}
   .map-topbar {
     height: 61px;
   }

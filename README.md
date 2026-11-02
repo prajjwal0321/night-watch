@@ -30,6 +30,37 @@ NIGHTWATCH combines routing information with geographic features retrieved from 
 4. The backend queries OpenStreetMap data for recorded streetlights and selected public amenities.
 5. The application displays the retrieved records and their proximity to the route.
 
+
+## System Architecture
+
+```mermaid
+flowchart TD
+    U["User"] --> FE["React + TypeScript Frontend"]
+
+    FE --> GEO["Nominatim Geocoding API"]
+    GEO --> FE
+
+    FE --> ROUTE["OpenStreetMap routed-foot API"]
+    ROUTE --> FE
+
+    FE --> TILES["OpenStreetMap Map Tiles"]
+    TILES --> MAP["Leaflet Interactive Map"]
+
+    FE --> SAMPLE["Route Coordinate Sampling"]
+    SAMPLE --> API["Express Backend<br/>POST /api/area-data"]
+
+    API --> OVERPASS["Overpass API<br/>OpenStreetMap Records"]
+    OVERPASS --> API
+
+    API --> FE
+    FE --> PROCESS["Route Feature Filtering"]
+    PROCESS --> MAP
+
+    VERCEL["Vercel<br/>Frontend Hosting"] -.-> FE
+    RENDER["Render<br/>Backend Hosting"] -.-> API
+```
+
+
 ## Technology Stack
 
 | Layer | Technologies |
@@ -132,3 +163,14 @@ This project uses publicly available OpenStreetMap data through the Overpass API
 
 **NIGHTWATCH**  
 *Explore the environment around your route.*
+
+## Screenshots
+
+### Dashboard
+![NIGHTWATCH Dashboard](public/screenshots/dashboard.jpg)
+
+### Route Planning
+![Walking route and alternatives](public/screenshots/route-planning.jpg)
+
+### Route Environment
+![Mapped streetlights and public amenities](public/screenshots/route-environment.jpg)

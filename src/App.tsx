@@ -776,14 +776,16 @@ await loadRouteEnvironment(walkingRoutes[0]);
 
         <div className="map-canvas">
           <MapContainer
-            center={center}
-            zoom={13}
-            zoomControl={false}
-            className={`leaflet-map ${nightMode ? "night-map" : ""}`}
-          >
+  center={center}
+  zoom={13}
+  zoomControl={false}
+  className={`leaflet-map ${nightMode ? "night-map" : ""}`}
+>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              keepBuffer={4}
+updateWhenIdle={false}
             />
             <ZoomControl position="bottomright" />
             <FitRoute route={route} />

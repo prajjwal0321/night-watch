@@ -41,6 +41,10 @@ app.post("/api/area-data", async (req, res) => {
     res.status(500).json({ error: "Area-data service is not configured." });
     return;
   }
+  console.log("Area-data request received", {
+  origin: req.headers.origin,
+  points: req.body?.points?.length,
+});
 
   const { points } = req.body ?? {};
 
