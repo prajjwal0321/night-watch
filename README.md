@@ -173,4 +173,8 @@ This project uses publicly available OpenStreetMap data through the Overpass API
 ![Walking route and alternatives](public/screenshots/route-planning.jpg)
 
 ### Route Environment
-![Mapped streetlights and public amenities](public/screenshots/route-environment.jpg)
+![Mapped streetlights and public amenities](public/screenshots/route-environment.jpg)  
+
+## Documentation
+
+- [Data Collection and Methodology](docs/METHODOLOGY.md)
