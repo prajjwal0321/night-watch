@@ -235,3 +235,27 @@
   margin-top: 12px;
   line-height: 1.6;
 }
+
+/* Route comparison mobile readability */
+.comparison-row > strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.comparison-row > small {
+  display: block;
+  line-height: 1.5;
+}
+
+.comparison-counts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.comparison-counts span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
