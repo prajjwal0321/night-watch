@@ -182,3 +182,56 @@
     border-right-color: var(--border);
   }
 }
+
+
+.route-comparison {
+  margin-top: 18px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.route-comparison .section-label {
+  margin-bottom: 12px;
+}
+
+.comparison-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 13px;
+  margin-bottom: 9px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.comparison-row > strong {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.comparison-counts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.comparison-counts span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.comparison-counts svg {
+  flex-shrink: 0;
+}
+
+.route-comparison .helper-text {
+  margin-top: 12px;
+  line-height: 1.6;
+}

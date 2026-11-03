@@ -386,17 +386,32 @@ function App() {
   const [error, setError] = useState("");
   const [nightMode, setNightMode] = useState(true);
 const [areaData, setAreaData] = useState<AreaData | null>(null);
+const [routeAreaData, setRouteAreaData] = useState<
+  Record<number, AreaData>
+>({});
 const [areaLoading, setAreaLoading] = useState(false);
 const [areaError, setAreaError] = useState("");
 const [showAreaFeatures, setShowAreaFeatures] = useState(true);
-async function loadRouteEnvironment(route: SingleRouteData) {
+
+
+ async function loadRouteEnvironment(route: SingleRouteData) {
   setAreaLoading(true);
   setAreaError("");
   setAreaData(null);
 
   try {
     const data = await fetchAreaData(route);
+
     setAreaData(data);
+
+    const routeIndex = routeOptions.indexOf(route);
+
+    if (routeIndex !== -1) {
+      setRouteAreaData((previous) => ({
+        ...previous,
+        [routeIndex]: data,
+      }));
+    }
   } catch (err) {
     setAreaError(
       err instanceof Error
@@ -410,7 +425,17 @@ async function loadRouteEnvironment(route: SingleRouteData) {
 
 function selectRoute(option: SingleRouteData) {
   setRoute(option);
-  void loadRouteEnvironment(option);
+
+  const routeIndex = routeOptions.indexOf(option);
+  const cachedData = routeAreaData[routeIndex];
+
+  if (cachedData) {
+    setAreaData(cachedData);
+    setAreaError("");
+    setAreaLoading(false);
+  } else {
+    void loadRouteEnvironment(option);
+  }
 }
 const routeIndicators =
   route && areaData
@@ -453,9 +478,32 @@ const walkingRoutes = await getWalkingRoute(start, end);
 
 setRouteOptions(walkingRoutes);
 setRoute(walkingRoutes[0] ?? null);
+setRouteAreaData({});
 
+if (walkingRoutes.length > 0) {
+  const results = await Promise.all(
+    walkingRoutes.map(async (option, index) => {
+      try {
+        const data = await fetchAreaData(option);
+        return [index, data] as const;
+      } catch (err) {
+        console.error(`Could not load data for route ${index + 1}:`, err);
+        return null;
+      }
+    }),
+  );
 
-await loadRouteEnvironment(walkingRoutes[0]);
+  const comparisonData: Record<number, AreaData> = {};
+
+  for (const result of results) {
+    if (result) {
+      comparisonData[result[0]] = result[1];
+    }
+  }
+
+  setRouteAreaData(comparisonData);
+  setAreaData(comparisonData[0] ?? null);
+}
 
 
     } catch (err) {
@@ -618,6 +666,62 @@ await loadRouteEnvironment(walkingRoutes[0]);
       Alternative routes will appear when available.
     </p>
   )}
+
+  {routeOptions.length > 1 && (
+  <div className="route-comparison">
+    <div className="section-label">ROUTE ENVIRONMENT COMPARISON</div>
+    <p className="muted helper-text">
+  {Object.keys(routeAreaData).length === routeOptions.length
+  ? "Mapped data retrieved for all available routes."
+  : `${Object.keys(routeAreaData).length} of ${routeOptions.length} routes have retrieved mapped data. Some records may be unavailable.`}
+</p>
+
+    {routeOptions.map((option, index) => {
+      const data = routeAreaData[index];
+
+      const indicators = data
+        ? getRouteIndicators(option, data.features)
+        : null;
+        
+
+      return (
+        <div className="comparison-row" key={index}>
+          <strong>Route {index + 1}</strong>
+          {data && (
+  <small className="muted">
+    Updated {new Date(data.fetchedAt).toLocaleTimeString()}
+  </small>
+)}
+
+          {indicators ? (
+            <div className="comparison-counts">
+              <span>
+                <Zap size={14} />
+                {indicators.streetlights} streetlights
+              </span>
+
+              <span>
+                <Trees size={14} />
+                {indicators.amenities} amenities
+              </span>
+            </div>
+
+            
+          ) : (
+            <small className="muted">
+              {areaLoading ? "Loading records…" : "Data unavailable"}
+            </small>
+          )}
+        </div>
+      );
+    })}
+
+    <p className="muted helper-text">
+      Counts represent mapped records near sampled route points.
+      They are not a measure of route safety or verified feature coverage.
+    </p>
+  </div>
+)}
 </section>
 
 

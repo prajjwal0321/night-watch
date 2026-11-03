@@ -177,4 +177,5 @@ This project uses publicly available OpenStreetMap data through the Overpass API
 
 ## Documentation
 
+- [Project Case Study](docs/CASE_STUDY.md)
 - [Data Collection and Methodology](docs/METHODOLOGY.md)
